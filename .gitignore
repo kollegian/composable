@@ -27,10 +27,11 @@ rococo-local-raw.json
 rococo-local.json
 scripts/polkadot-launch/bin/polkadot
 scripts/polkadot-launch/*.log
-
+.rust-analyzer
 target
 .env
 
 node_modules/
 **/yarn-error.log
 **/.yarn/
+rust-toolchain.toml

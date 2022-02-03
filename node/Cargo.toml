@@ -13,7 +13,7 @@ targets = ["x86_64-unknown-linux-gnu"]
 codec = { package = "parity-scale-codec", version = "2.0.0" }
 jsonrpc-core = "18"
 log = "0.4.14"
-serde = { version = "1.0.119", features = ["derive"] }
+serde = { version = "1.0.130", features = ["derive"] }
 structopt = "0.3.8"
 
 # Local Dependencies
@@ -91,7 +91,7 @@ hex = "0.4.3"
 
 [features]
 default = []
-runtime-benchmarks = ["picasso-runtime/runtime-benchmarks", "composable-runtime/runtime-benchmarks", "dali-runtime/runtime-benchmarks"]
+runtime-benchmarks = ["polkadot-service/runtime-benchmarks", "picasso-runtime/runtime-benchmarks", "composable-runtime/runtime-benchmarks", "dali-runtime/runtime-benchmarks"]
 ocw = []
 dali = ["dali-runtime"]
 composable = ["composable-runtime"]
@@ -100,4 +100,3 @@ std = ["picasso-runtime/std", "composable-runtime/std", "dali-runtime/std"]
 
 [package.metadata.cargo-udeps.ignore]
 normal = ["pallet-bonded-finance"]
-

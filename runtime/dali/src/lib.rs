@@ -64,6 +64,7 @@ use system::{
 	EnsureRoot,
 };
 use transaction_payment::{Multiplier, TargetedFeeAdjustment};
+pub use xcmp::XcmConfig;
 
 /// Opaque types. These are used by the CLI to instantiate machinery that don't need to know
 /// the specifics of the runtime. They can then be made to be agnostic over specific formats
@@ -100,8 +101,8 @@ pub const VERSION: RuntimeVersion = RuntimeVersion {
 	//   `spec_version`, and `authoring_version` are the same between Wasm and native.
 	// This value is set to 100 to notify Polkadot-JS App (https://polkadot.js.org/apps) to use
 	//   the compatible custom types.
-	spec_version: 2000,
-	impl_version: 1,
+	spec_version: 2004,
+	impl_version: 2,
 	apis: RUNTIME_API_VERSIONS,
 	transaction_version: 1,
 };
@@ -858,6 +859,23 @@ impl dutch_auction::Config for Runtime {
 	type WeightInfo = weights::dutch_auction::WeightInfo<Runtime>;
 }
 
+parameter_types! {
+	  pub const MosaicId: PalletId = PalletId(*b"plmosaic");
+	pub const MinimumTTL: BlockNumber = 10;
+	pub const MinimumTimeLockPeriod: BlockNumber = 20;
+}
+
+impl mosaic::Config for Runtime {
+	type Event = Event;
+	type PalletId = MosaicId;
+	type Assets = Assets;
+	type MinimumTTL = MinimumTTL;
+	type MinimumTimeLockPeriod = MinimumTimeLockPeriod;
+	type BudgetPenaltyDecayer = mosaic::BudgetPenaltyDecayer<Balance, BlockNumber>;
+	type NetworkId = u32;
+	type ControlOrigin = EnsureRootOrHalfCouncil;
+}
+
 construct_runtime!(
 	pub enum Runtime where
 		Block = Block,
@@ -912,6 +930,7 @@ construct_runtime!(
 		Vesting: vesting::{Call, Event<T>, Pallet, Storage} = 59,
 		BondedFinance: bonded_finance::{Call, Event<T>, Pallet, Storage} = 60,
 		DutchAuction: dutch_auction::{Pallet, Call, Storage, Event<T>} = 61,
+		Mosaic: mosaic::{Pallet, Call, Storage, Event<T>} = 62,
 
 		CallFilter: call_filter::{Pallet, Call, Storage, Event<T>} = 100,
 	}

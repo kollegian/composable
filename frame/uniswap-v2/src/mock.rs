@@ -179,7 +179,7 @@ impl orml_tokens::Config for Test {
 
 parameter_types! {
 	pub Precision: FixedU128 = FixedU128::saturating_from_rational(1, 1_000_000_000);
-	pub TestPalletID : PalletId = PalletId(*b"curve_am");
+	pub TestPalletID : PalletId = PalletId(*b"const_am");
 }
 
 impl constant_product_amm::Config for Test {
