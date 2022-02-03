@@ -1,10 +1,10 @@
 [package]
-name = "pallet-vault"
+name = "pallet-pool"
 version = "0.0.1"
-authors = ["Composable Developers"]
+authors = ["kevin@composable.finance", "Composable Developers"]
 homepage = "https://composable.finance"
 edition = "2021"
-
+rust-version = "1.56"
 
 [package.metadata.docs.rs]
 targets = ["x86_64-unknown-linux-gnu"]
@@ -25,11 +25,14 @@ sp-arithmetic = { default-features = false, git = "https://github.com/paritytech
 sp-io = { default-features = false,  git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.13" }
 sp-core = { default-features = false,  git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.13" }
 sp-std = { default-features = false,  git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.13" }
+fixed = {default-features = false, git = "https://github.com/encointer/substrate-fixed", package = "substrate-fixed"}
 
 composable-traits = { version = "0.0.1", path = "../composable-traits", default-features = false }
+vault = { version = "0.0.1", package = "pallet-vault", path = "../vault", default-features = false, optional = true }
 
 log = { version = "0.4.14", default-features = false }
 num-traits = { version = "0.2.14", default-features = false }
+num-integer = { version = "0.1", default-features = false }
 bitflags = "1.3.2"
 scale-info = { version = "1.0", default-features = false, features = ["derive"] }
 
@@ -55,6 +58,7 @@ std = [
     "sp-std/std",
     "sp-arithmetic/std",
 	"composable-traits/std",
+    "vault/std",
     "scale-info/std",
 ]
 
@@ -63,3 +67,4 @@ runtime-benchmarks = [
     "frame-support/runtime-benchmarks",
     "frame-system/runtime-benchmarks",
 ]
+

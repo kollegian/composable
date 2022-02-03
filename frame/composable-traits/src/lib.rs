@@ -24,6 +24,7 @@ pub mod lending;
 pub mod liquidation;
 pub mod math;
 pub mod oracle;
+pub mod pool;
 pub mod privilege;
 pub mod time;
 pub mod vault;
