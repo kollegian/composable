@@ -20,6 +20,8 @@ use sp_runtime::{
 };
 use std::sync::Arc;
 
+use proptest::prelude::*;
+
 #[test]
 fn add_asset_and_info() {
 	new_test_ext().execute_with(|| {
