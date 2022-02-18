@@ -16,6 +16,7 @@ xcm = { package = "xcm", git = "https://github.com/paritytech/polkadot", branch 
 sp-arithmetic = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.13" }
 sp-runtime = { default-features = false, git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.13" }
 sp-std = { default-features = false,  git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.13" }
+fixed = "1.9.0"
 
 composable-support = {default-features = false, path = "../composable-support"}
 scale-info = { version = "1.0", default-features = false, features = ["derive"] }
