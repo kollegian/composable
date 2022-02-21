@@ -1,3 +1,5 @@
+#![allow(unknown_lints, panics)]
+
 use jsonrpc_core_client::transports::ws;
 use sc_rpc::system::SystemClient;
 use serde::Deserialize;
