@@ -167,7 +167,7 @@ jobs:
 
       - name: Substrace
         run: |
-          cargo install dylint dylint-link
+          cargo install cargo-dylint dylint-link
           cargo dylint substrace --workspace
           
       - name: Cargo clippy
