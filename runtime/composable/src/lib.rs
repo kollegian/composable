@@ -665,6 +665,7 @@ impl democracy::Config for Runtime {
 }
 
 parameter_types! {
+	  pub const CrowdloanRewardsId: PalletId = PalletId(*b"pal_crow");
 	  pub const InitialPayment: Perbill = Perbill::from_percent(50);
 	  pub const VestingStep: BlockNumber = 7 * DAYS;
 	  pub const Prefix: &'static [u8] = b"composable-";
@@ -673,7 +674,7 @@ parameter_types! {
 impl crowdloan_rewards::Config for Runtime {
 	type Event = Event;
 	type Balance = Balance;
-	type Currency = Assets;
+	type RewardAsset = Assets;
 	type AdminOrigin = EnsureRootOrHalfCouncil;
 	type Convert = sp_runtime::traits::ConvertInto;
 	type RelayChainAccountId = [u8; 32];
@@ -681,6 +682,7 @@ impl crowdloan_rewards::Config for Runtime {
 	type VestingStep = VestingStep;
 	type Prefix = Prefix;
 	type WeightInfo = ();
+	type PalletId = CrowdloanRewardsId;
 }
 
 parameter_types! {
@@ -699,10 +701,7 @@ pub struct BaseCallFilter;
 
 impl Contains<Call> for BaseCallFilter {
 	fn contains(call: &Call) -> bool {
-		!matches!(
-			call,
-			Call::Balances(_) | Call::Indices(_) | Call::Democracy(_) | Call::Treasury(_)
-		)
+		!matches!(call, Call::Tokens(_) | Call::Indices(_) | Call::Democracy(_) | Call::Treasury(_))
 	}
 }
 
