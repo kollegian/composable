@@ -189,7 +189,6 @@ pub mod pallet {
 		type AssetId = AssetIdOf<T>;
 		type Balance = T::Balance;
 
-		#[allow(unused_variables)]
 		fn add_margin(
 			acc: &Self::AccountId,
 			asset: Self::AssetId,
