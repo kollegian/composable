@@ -7217,7 +7217,6 @@ dependencies = [
  "hex",
  "ibc",
  "log 0.4.14",
- "pallet-mmr",
  "parity-scale-codec",
  "prost-types",
  "scale-info",
