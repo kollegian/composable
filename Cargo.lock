@@ -4139,6 +4139,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "ibc-primitives"
+version = "0.1.0"
+dependencies = [
+ "ibc",
+ "parity-scale-codec",
+ "scale-info",
+ "serde",
+]
+
+[[package]]
 name = "ibc-proto"
 version = "0.16.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4157,16 +4167,19 @@ name = "ibc-rpc"
 version = "0.1.0"
 dependencies = [
  "ibc",
+ "ibc-primitives",
  "ibc-runtime-api",
  "jsonrpc-core",
  "jsonrpc-core-client",
  "jsonrpc-derive",
  "parity-scale-codec",
+ "sc-client-api",
  "serde",
  "sp-api",
  "sp-blockchain",
  "sp-core",
  "sp-runtime",
+ "tendermint-proto",
 ]
 
 [[package]]
@@ -4174,6 +4187,7 @@ name = "ibc-runtime-api"
 version = "0.1.0"
 dependencies = [
  "ibc",
+ "ibc-primitives",
  "parity-scale-codec",
  "scale-info",
  "sp-api",

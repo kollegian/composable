@@ -28,6 +28,7 @@ members = [
     "bridges/pallet-ibc",
     "bridges/pallet-ibc/ibc-rpc",
     "bridges/pallet-ibc/ibc-runtime-api",
+    "bridges/pallet-ibc/ibc-primitives",
     "integration-tests/local-integration-tests",
     "node",
 
