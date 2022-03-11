@@ -7210,16 +7210,22 @@ dependencies = [
 name = "pallet-ibc"
 version = "0.0.1"
 dependencies = [
+ "chrono",
  "frame-benchmarking",
  "frame-support",
  "frame-system",
+ "hex",
  "ibc",
  "log 0.4.14",
+ "pallet-mmr",
  "parity-scale-codec",
  "prost-types",
  "scale-info",
+ "serde",
+ "sha2 0.9.9",
  "sp-core",
  "sp-io",
+ "sp-keyring",
  "sp-runtime",
  "sp-std 4.0.0",
  "sp-trie",
