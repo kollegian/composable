@@ -27,7 +27,7 @@ members = [
     "frame/*",
     "bridges/pallet-ibc",
     "bridges/pallet-ibc/ibc-rpc",
-    "bridges/pallet-ibc/ibc-runtime-apis",
+    "bridges/pallet-ibc/ibc-runtime-api",
     "integration-tests/local-integration-tests",
     "node",
 

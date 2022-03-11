@@ -4155,10 +4155,29 @@ dependencies = [
 [[package]]
 name = "ibc-rpc"
 version = "0.1.0"
+dependencies = [
+ "ibc",
+ "ibc-runtime-api",
+ "jsonrpc-core",
+ "jsonrpc-core-client",
+ "jsonrpc-derive",
+ "parity-scale-codec",
+ "serde",
+ "sp-api",
+ "sp-blockchain",
+ "sp-core",
+ "sp-runtime",
+]
 
 [[package]]
-name = "ibc-runtime-apis"
+name = "ibc-runtime-api"
 version = "0.1.0"
+dependencies = [
+ "ibc",
+ "parity-scale-codec",
+ "scale-info",
+ "sp-api",
+]
 
 [[package]]
 name = "ics23"
