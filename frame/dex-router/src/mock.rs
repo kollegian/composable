@@ -167,6 +167,7 @@ impl pallet_uniswap_v2::Config for Test {
 parameter_types! {
   #[derive(codec::Encode, codec::Decode, codec::MaxEncodedLen, TypeInfo)]
 	pub const MaxHopsCount: u32 = 4;
+	pub TestPalletID: PalletId = PalletId(*b"dex_rout");
 }
 
 impl dex_router::Config for Test {
@@ -177,6 +178,7 @@ impl dex_router::Config for Test {
 	type PoolId = u32;
 	type StableSwapDex = StableSwapAmm;
 	type ConstantProductDex = ConstantProductAmm;
+	type PalletId = TestPalletID;
 	type WeightInfo = ();
 }
 

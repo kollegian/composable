@@ -12,11 +12,14 @@ pub use pallet::*;
 #[cfg(test)]
 mod mock;
 
-pub mod weights;
-pub use crate::weights::WeightInfo;
-
 #[cfg(test)]
 mod tests;
+
+#[cfg(feature = "runtime-benchmarks")]
+mod benchmarking;
+
+pub mod weights;
+pub use crate::weights::WeightInfo;
 
 #[frame_support::pallet]
 pub mod pallet {
@@ -28,7 +31,7 @@ pub mod pallet {
 		math::SafeArithmetic,
 	};
 	use core::fmt::Debug;
-	use frame_support::{pallet_prelude::*, transactional};
+	use frame_support::{pallet_prelude::*, transactional, PalletId};
 	use frame_system::{ensure_signed, pallet_prelude::OriginFor};
 	use sp_runtime::{
 		traits::{CheckedAdd, One, Zero},
@@ -83,6 +86,9 @@ pub mod pallet {
 			AccountId = Self::AccountId,
 			PoolId = Self::PoolId,
 		>;
+
+		#[pallet::constant]
+		type PalletId: Get<PalletId>;
 
 		type WeightInfo: WeightInfo;
 	}
@@ -352,6 +358,9 @@ pub mod pallet {
 							T::Balance::zero(),
 							true,
 						)?;
+						sp_std::if_std! {
+							println!("stable_swap currency_pair {:?}, amount {:?}", currency_pair, dx_t);
+						}
 						dx_t = dy_t;
 					},
 					DexRouteNode::Uniswap(pool_id) => {
@@ -367,6 +376,9 @@ pub mod pallet {
 							T::Balance::zero(),
 							true,
 						)?;
+						sp_std::if_std! {
+							println!("uniswap currency_pair {:?}, amount {:?}", currency_pair, dx_t);
+						}
 						dx_t = dy_t;
 					},
 				}
