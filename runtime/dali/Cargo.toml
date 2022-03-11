@@ -89,7 +89,7 @@ curve-amm = { package = "pallet-curve-amm", path = "../../frame/curve-amm", defa
 liquidity-bootstrapping = { package = "pallet-liquidity-bootstrapping", path = "../../frame/liquidity-bootstrapping", default-features = false }
 
 # ibc support
-pallet-ibc = { path = "../../bridges/substrate-ibc", default-features = false }
+pallet-ibc = { path = "../../bridges/pallet-ibc", default-features = false }
 
 # Used for the node template's RPCs
 system-rpc-runtime-api = { package = "frame-system-rpc-runtime-api", git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.16", default-features = false }

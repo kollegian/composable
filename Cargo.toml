@@ -25,9 +25,9 @@ local-integration-tests = []
 exclude = ["frame/transaction-fee"]
 members = [
     "frame/*",
-    "bridges/substrate-ibc",
-    "bridges/substrate-ibc/ibc-rpc",
-    "bridges/substrate-ibc/ibc-runtime-apis",
+    "bridges/pallet-ibc",
+    "bridges/pallet-ibc/ibc-rpc",
+    "bridges/pallet-ibc/ibc-runtime-apis",
     "integration-tests/local-integration-tests",
     "node",
 
