@@ -88,6 +88,9 @@ uniswap-v2 = { package = "pallet-uniswap-v2", path = "../../frame/uniswap-v2", d
 curve-amm = { package = "pallet-curve-amm", path = "../../frame/curve-amm", default-features = false }
 liquidity-bootstrapping = { package = "pallet-liquidity-bootstrapping", path = "../../frame/liquidity-bootstrapping", default-features = false }
 
+# ibc support
+pallet-ibc = { path = "../../bridges/substrate-ibc", default-features = false }
+
 # Used for the node template's RPCs
 system-rpc-runtime-api = { package = "frame-system-rpc-runtime-api", git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.16", default-features = false }
 transaction-payment-rpc-runtime-api = { package = "pallet-transaction-payment-rpc-runtime-api", git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.16", default-features = false }
@@ -128,7 +131,6 @@ orml-unknown-tokens = { git = "https://github.com/open-web3-stack/open-runtime-m
 
 # simnode support
 simnode-apis = { package = "simnode-runtime-apis", git = "https://github.com/polytope-labs/substrate-simnode", default-features = false, branch = "master" }
-
 
 [build-dependencies]
 substrate-wasm-builder = { git = "https://github.com/paritytech/substrate", branch = "polkadot-v0.9.16" }
@@ -213,6 +215,7 @@ std = [
   "uniswap-v2/std",
   "curve-amm/std",
 	"liquidity-bootstrapping/std",
+	"pallet-ibc/std"
 ]
 runtime-benchmarks = [
 	"assets/runtime-benchmarks",

@@ -1012,6 +1012,18 @@ impl liquidity_bootstrapping::Config for Runtime {
 	type AdminOrigin = EnsureRootOrHalfCouncil;
 }
 
+parameter_types! {
+	pub const ExpectedBlockTime: u64 = SLOT_DURATION;
+}
+
+impl pallet_ibc::Config for Runtime {
+	type TimeProvider = Timestamp;
+	type Event = Event;
+	const INDEXING_PREFIX: &'static [u8] = b"ibc";
+	const CONNECTION_PREFIX: &'static [u8] = b"ibc";
+	type ExpectedBlockTime = ExpectedBlockTime;
+}
+
 construct_runtime!(
 	pub enum Runtime where
 		Block = Block,
@@ -1075,6 +1087,9 @@ construct_runtime!(
 	LiquidityBootstrapping: liquidity_bootstrapping::{Pallet, Call, Storage, Event<T>} = 67,
 
 		CallFilter: call_filter::{Pallet, Call, Storage, Event<T>} = 100,
+
+		// IBC
+		Ibc:: pallet_ibc::{Pallet, Call, Storage, Event<T>} = 101
 	}
 );
 
