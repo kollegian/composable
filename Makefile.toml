@@ -47,7 +47,7 @@ workspace = false
 [tasks.run-local-integration-tests-debug]
 workspace=false
 script='''
-RUST_BACKTRACE=full RUST_LOG=trace,parity-db=warn,trie=warn,runtime=trace,substrate-relay=trace,bridge=trace,xcmp=trace cargo +stable test  transfer_from_relay_chain_deposit_to_treasury_if_below_existential_deposit --package local-integration-tests --features local-integration-tests  --no-default-features -- --nocapture --test-threads=1
+RUST_BACKTRACE=full RUST_LOG=trace,parity-db=warn,trie=warn,runtime=trace,substrate-relay=trace,bridge=trace,xcmp=trace cargo +stable test   --package local-integration-tests --features local-integration-tests --features picasso  --no-default-features -- --nocapture --test-threads=1
 '''
 
 [tasks.check-ci]
