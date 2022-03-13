@@ -25,13 +25,8 @@ pub use xcmp::{MaxInstructions, UnitWeightCost, XcmConfig, };
 
 use common::{
 	impls::DealWithFees, AccountId, AccountIndex, Address, Amount, AuraId, Balance, BlockNumber,
-<<<<<<< HEAD
-	CouncilInstance, EnsureRootOrHalfCouncil, Hash, Moment, Signature, AVERAGE_ON_INITIALIZE_RATIO,
-	DAYS, HOURS, MAXIMUM_BLOCK_WEIGHT, MILLISECS_PER_BLOCK, NORMAL_DISPATCH_RATIO, SLOT_DURATION,
-=======
 	CouncilInstance, EnsureRootOrHalfCouncil, Hash, Signature, AVERAGE_ON_INITIALIZE_RATIO, DAYS,
-	HOURS, MAXIMUM_BLOCK_WEIGHT, NORMAL_DISPATCH_RATIO, SLOT_DURATION, MultiExistentialDeposits,
->>>>>>> 27c8ff4b5678b7b6a59763651ab7d8fe1d9458d8
+	HOURS, MAXIMUM_BLOCK_WEIGHT, NORMAL_DISPATCH_RATIO, SLOT_DURATION, MultiExistentialDeposits, MILLISECS_PER_BLOCK
 };
 use orml_traits::parameter_type_with_key;
 use primitives::currency::CurrencyId;
