@@ -219,7 +219,12 @@ jobs:
               ./node_modules/.bin/remark -f $file || total_exit_code=$?
           done << (find . -name "*.md" -not -path "*/node_modules/*" -not -path "./.github/*")
           exit $total_exit_code
-          
+
+      - name: Substrace
+        run: |
+          cargo install cargo-dylint dylint-link
+          cargo dylint substrace --workspace    
+      
       - name: Cargo clippy
         run: |
           SKIP_WASM_BUILD=1 env -u RUSTFLAGS cargo +nightly clippy --workspace --all-targets --tests -- -D warnings
