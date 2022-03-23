@@ -41,8 +41,8 @@ describe('tx.mosaic Tests', function () {
             sudoKey = walletAlice;
             startRelayerWallet = walletEve;
             newRelayerWallet = walletAlice;
-            await mintAssetsToWallet(startRelayerWallet, sudoKey, [1,4], 25000);
-            await mintAssetsToWallet(newRelayerWallet, sudoKey, [1,4], 25000);
+            /*await mintAssetsToWallet(startRelayerWallet, sudoKey, [2], 25000);
+            await mintAssetsToWallet(newRelayerWallet, sudoKey, [2], 25000);*/
         });
 
         /**
@@ -67,6 +67,7 @@ describe('tx.mosaic Tests', function () {
             // if (!testConfiguration.enabledTests.query.account__success.balanceGTZero1)
             //   this.skip();
             // Setting timeout to 2 minutes.
+            this.skip();
             this.timeout(2 * 60 * 1000);
             const {data:[result]} = await TxMosaicTests.testRotateRelayer(startRelayerWallet, newRelayerWallet.address, 90);
             const relayerInfo = await api.query.mosaic.relayer();
@@ -101,7 +102,7 @@ describe('tx.mosaic Tests', function () {
                 this.skip();
             // Setting timeout to 2 minutes.
             this.timeout(2 * 60 * 1000);
-            const assetId = api.createType('u128', 4);
+            const assetId = api.createType('u128', 2);
             const amount = api.createType('u128', 10000);
             const decay = api.createType('PalletMosaicDecayBudgetPenaltyDecayer', {
                 Linear:
@@ -113,7 +114,7 @@ describe('tx.mosaic Tests', function () {
 
         it('Should be able to update asset mapping', async function(){
             this.timeout(2*60*1000);
-            const assetId = api.createType('u128', 4);
+            const assetId = api.createType('u128', 2);
             const networkId = api.createType('u128', 1);
             const remoteAssetId = api.createType('CommonMosaicRemoteAssetId', {
                 EthereumTokenAddress: api.createType('[u8;20]', "0x0423276a1da214B094D54386a1Fb8489A9d32730")
@@ -125,26 +126,64 @@ describe('tx.mosaic Tests', function () {
         it('Should be able to send transfers to another network', async function(){
             this.timeout(2*60*1000);
             const paramNetworkId = api.createType('u32', 1);
-            const paramAssetId = api.createType('u128', 4);
+            const paramAssetId = api.createType('u128', 2);
             const paramRemoteTokenContAdd = api.createType('[u8;20]', "0x0423276a1da214B094D54386a1Fb8489A9d32730");
             const paramAmount = api.createType('u128', 350);
             const paramKeepAlive = api.createType('bool', false);
-            const {data: [result]} = await TxMosaicTests.testTransferTo(startRelayerWallet, paramNetworkId, paramAssetId, paramRemoteTokenContAdd, paramAmount, paramKeepAlive);
-            const lockedAmount = await api.query.mosaic.outgoingTransactions(startRelayerWallet.address, 4);
-            expect(lockedAmount.unwrap()[0].toNumber()).to.be.equal(paramAmount);
+            const {data: [result]} = await TxMosaicTests.testTransferTo(newRelayerWallet, paramNetworkId, paramAssetId, paramRemoteTokenContAdd, paramAmount, paramKeepAlive);
+            const lockedAmount = await api.query.mosaic.outgoingTransactions(startRelayerWallet.address, 2);
+            expect(lockedAmount.unwrap()[0].toNumber()).to.be.equal(700);
         });
 
-        it('Should be able to mint assets into pallet wallet with timelock', async function(){
+        it('Should be able to mint assets into pallet wallet with timelock//simulates incoming transfer from pair network', async function(){
             this.timeout(2*60*1000);
             const paramNetworkId = api.createType('u32', 1);
             const remoteAssetId = api.createType('CommonMosaicRemoteAssetId', {
-                EthereumTokenAddress: api.createType('[u8;20]', "0x1eCe1739DAE08253aE582C404511B37355B42C84")
+                EthereumTokenAddress: api.createType('[u8;20]', "0x0423276a1da214B094D54386a1Fb8489A9d32730")
             });
             const toTransfer = walletBob.address;
             const amount = api.createType('u128', 200);
-            const lockTime = api.createType('u32', 22);
-            await TxMosaicTests.lockFunds(startRelayerWallet, paramNetworkId, remoteAssetId, toTransfer, amount, lockTime);
+            const lockTime = api.createType('u32', 11);
+            await TxMosaicTests.lockFunds(newRelayerWallet, paramNetworkId, remoteAssetId, toTransfer, amount, lockTime);
         });
+
+        it('Relayer accepts outgoing transfer', async function(){
+            this.timeout(2*60*1000);
+            const senderWallet = newRelayerWallet;
+            const remoteAssetId = api.createType('CommonMosaicRemoteAssetId', {
+                EthereumTokenAddress: api.createType('[u8;20]', "0x0423276a1da214B094D54386a1Fb8489A9d32730")
+            });
+            const amount = api.createType('u128', 200);
+            const {data: [result]} = await TxMosaicTests.testAcceptTransfer(newRelayerWallet, newRelayerWallet, 1, remoteAssetId, 200);
+            expect(result.toString()).to.be.equal(api.createType('AccountId32', newRelayerWallet.address).toString());
+        });
+
+        it('Receivee can claim incoming transfers once accepted by the relayer', async function(){
+            this.timeout(2*60*1000);
+            const receiverWallet = walletBob;
+            const assetId = api.createType('u128', 2);
+            const{data: [result]} = await TxMosaicTests.testClaimTransactions(receiverWallet, assetId);
+            expect(result.toString()).to.be.equal(api.createType('AccountId32', receiverWallet.address).toString());
+        })
+        it('User can claim the funds not accepted by the relayer in the pair network', async function(){
+            this.timeout(2*60*1000);
+            const wallet = newRelayerWallet;
+            const assetId = api.createType('u128', 2);
+            const {data: [result]} = await TxMosaicTests.testClaimStaleFunds(newRelayerWallet, assetId);
+            expect(result.toString()).to.be.equal(api.createType('AccountId32', newRelayerWallet.address).toString());
+        })
+        it.only('If the finality issues occur, relayer can burn untrusted amounts from tx', async function(){
+            this.timeout(2*60*1000);
+            const wallet = newRelayerWallet;
+            const networkId = api.createType('u32', 1);
+            const remoteAssetId = api.createType('CommonMosaicRemoteAssetId', {
+                EthereumTokenAddress: api.createType('[u8;20]', "0x0423276a1da214B094D54386a1Fb8489A9d32730")
+            });
+            const returnWallet = newRelayerWallet;
+            const untrustedAmount = api.createType('u128', 250);
+            const {data : [result]} = await TxMosaicTests.testRescindTimeLockedFunds(wallet, networkId, remoteAssetId, untrustedAmount);
+            expect(result.toString()).to.be.equal(api.createType('AccountId32', newRelayerWallet.address).toString());
+        })
     });
 });
 
@@ -217,5 +256,43 @@ export class TxMosaicTests {
             api.events.mosaic.TransferIntoRescined.is,
             api.tx.mosaic.timelockedMint(network, remoteAsset, sentWallet, amount, lockTime, paramId)
         )
+    }
+
+    public static async testAcceptTransfer(wallet, senderWallet, networkId, remoteAssetId, amount) {
+        return await sendAndWaitForSuccess(
+            api,
+            wallet,
+            api.events.mosaic.PartialTransferAccepted.is,
+            api.tx.mosaic.acceptTransfer(senderWallet.address,
+              networkId,
+              remoteAssetId,
+              amount)
+        );
+    }
+    public static async testClaimTransactions(wallet, assetId){
+        return await sendAndWaitForSuccess(
+            api,
+            wallet,
+            api.events.mosaic.TransferClaimed.is,
+            api.tx.mosaic.claimTo(assetId, wallet)
+        );
+    }
+
+    public static async testClaimStaleFunds(wallet, assetId){
+        return await sendAndWaitForSuccess(
+            api,
+            wallet,
+            api.events.mosaic.StaleTxClaimed.is,
+            api.tx.mosaic.claimStaleTo(assetId, wallet.address)
+        )
+    }
+
+    public static async testRescindTimeLockedFunds(wallet, networkId, remoteAssetId, amount){
+        return await sendAndWaitForSuccess(
+            api,
+            wallet,
+            api.events.mosaic.TransferIntoRescined.is,
+            api.tx.mosaic.rescindTimelockedMint(networkId, remoteAssetId, wallet.address, amount)
+        );
     }
 }
