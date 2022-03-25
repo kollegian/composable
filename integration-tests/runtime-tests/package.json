@@ -12,6 +12,7 @@
     "init": "ts-node -r tsconfig-paths/register src/main.ts",
     "init_and_test": "npm run init && npm run test",
     "test": "ts-mocha --paths -p tsconfig.json",
+    "test_integration": "ts-mocha -g \"@integration\" --paths -p tsconfig.json",
     "gen": "npm run gen:defs && npm run gen:meta",
     "gen:defs": "ts-node --skip-project node_modules/.bin/polkadot-types-from-defs --package @composable/types/interfaces --input ./src/types/interfaces",
     "gen:meta": "ts-node --skip-project node_modules/.bin/polkadot-types-from-chain --package @composable/types/interfaces --endpoint ws://localhost:9988 --output src/types/interfaces/",

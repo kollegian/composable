@@ -29,10 +29,10 @@ describe('tx.constantProductDex Tests', function () {
     walletId2 = walletBob.derive("/test/constantProductDex/walletId2");
     walletId1Account = api.createType('AccountId32', walletId1.address).toString();
     walletId2Account = api.createType('AccountId32', walletId2.address).toString();
-    baseAssetId = 2;
-    quoteAssetId = 3;
-    baseAmount = 2500;
-    quoteAmount = 2500;
+    baseAssetId = 4;
+    quoteAssetId = 129;
+    baseAmount = 100000000000;
+    quoteAmount = 250000000000;
     //sets the owner fee to 1.00%/Type Permill
     ownerFee = 10000;      
   });   
