@@ -9,10 +9,11 @@ import {
   txBondedFinanceCancelFailureTest,
   txBondedFinanceCancelSuccessTest, txBondedFinanceCancelSudoSuccessTest
 } from "@composabletests/tests/bondedFinance/testHandlers/cancelTests";
+import {mintAssetsToWallet} from "@composable/utils/mintingHelper";
 
 
 /**
- * Contains all TX tests for the pallet:
+ * Contains all TX tests for the pallgit et:
  * bondedFinance
  */
 describe('tx.bondedFinance Tests', function() {
@@ -23,6 +24,11 @@ describe('tx.bondedFinance Tests', function() {
   /**
    * bondedFinance.offer(...) Success Tests
    */
+  before('mint assets into the wallet', async function(){
+    this.timeout(2*60*1000);
+    await mintAssetsToWallet(walletAlice, walletAlice, [4]);
+    await mintAssetsToWallet(walletBob, walletAlice, [4]);
+  });
   describe('tx.bondedFinance.offer & .bond Success Tests', function () {
     if (!testConfiguration.enabledTests.offer_bond__success.enabled)
       return;
@@ -35,14 +41,16 @@ describe('tx.bondedFinance Tests', function() {
         this.skip();
       const requestParameters = {
         beneficiary: walletAlice.publicKey,
-        asset: api.createType('u128', 1),
-        bondPrice: api.consts.bondedFinance.stake,
+        asset: api.createType('u128', 4),
+        //api.consts.bondedFinance.stake,
+        bondPrice: api.createType('u128', 100000000000000),
         nbOfBonds: api.createType('u128', 10),
         maturity: { Finite: { returnIn: api.createType('u32', 16) } },
         reward: {
-          asset: api.createType('u128', 1),
-          amount: api.consts.bondedFinance.minReward,
-          maturity: api.createType('u32', 1)
+          asset: api.createType('u128', 4),
+          //api.consts.bondedFinance.minReward
+          amount: api.createType('u128', 1100000000000000),
+          maturity: api.createType('u32', 4)
         }
       };
       const { data: [result], } = await txBondedFinanceOfferSuccessTest(walletAlice, requestParameters);
@@ -56,13 +64,13 @@ describe('tx.bondedFinance Tests', function() {
         this.skip();
       const requestParameters = {
         beneficiary: walletBob.publicKey,
-        asset: api.createType('u128', 1),
-        bondPrice: api.consts.bondedFinance.stake,
+        asset: api.createType('u128', 4),
+        bondPrice: api.createType('u128', 100000000000000),
         nbOfBonds: api.createType('u128', 10),
         maturity: { Finite: { returnIn: api.createType('u32', 16) } },
         reward: {
           asset: api.createType('u128', 1),
-          amount: api.consts.bondedFinance.minReward,
+          amount: api.createType('u128', 1100000000000000),
           maturity: api.createType('u32', 1)
         }
       };
@@ -105,15 +113,16 @@ describe('tx.bondedFinance Tests', function() {
         nbOfBonds: api.createType('u128', 10),
         maturity: {Finite: {returnIn: api.createType('u32', 16)}},
         reward: {
-          asset: api.createType('u128', 1),
+          asset: api.createType('u128', 4),
           amount: api.consts.bondedFinance.minReward,
-          maturity: api.createType('u32', 1)
+          maturity: api.createType('u32', 4)
         }
       };
-      const {data: [result],} = await txBondedFinanceOfferFailureTest(walletAlice, requestParameters);
+      await txBondedFinanceOfferFailureTest(walletAlice, requestParameters).catch(function (error){
+        expect(error.message).to.contain("validation");
+      });
       // !Note: Doesn't provide failure message, and instead returns the same result as a successful call.
       // E.g. on a clean chain it returns `3`, because it would have been the third offer.
-      expect(result.toNumber()).to.be.a('Number');
     });
 
     // #5 Alice can't create offer with the reward amount too low.
@@ -132,8 +141,9 @@ describe('tx.bondedFinance Tests', function() {
           maturity: api.createType('u32', 1)
         }
       };
-      const {data: [result],} = await txBondedFinanceOfferFailureTest(walletAlice, requestParameters);
-      expect(result.toNumber()).to.be.a('number');
+      await txBondedFinanceOfferFailureTest(walletAlice, requestParameters).catch(function (error){
+        expect(error.message).to.contain("validation");
+      });
     });
 
     // #5 Alice can't create offer with the reward amount too low.
@@ -152,8 +162,9 @@ describe('tx.bondedFinance Tests', function() {
           maturity: api.createType('u32', 1)
         }
       };
-      const {data: [result],} = await txBondedFinanceOfferFailureTest(walletAlice, requestParameters);
-      expect(result.toNumber()).to.be.a('number');
+      await txBondedFinanceOfferFailureTest(walletAlice, requestParameters).catch(function (error){
+        expect(error.message).to.contain("validation");
+      });
     });
   });
 

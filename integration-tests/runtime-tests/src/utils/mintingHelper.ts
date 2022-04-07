@@ -1,5 +1,8 @@
-import {sendAndWaitForSuccess} from "@composable/utils/polkadotjs";
+import {sendAndWaitForSuccess, sendAndWaitForWithBatch} from "@composable/utils/polkadotjs";
 import {expect} from "chai";
+import {SubmittableExtrinsic} from "@polkadot/api/promise/types";
+import {ISubmittableResult} from "@polkadot/types/types";
+import {Extrinsic} from "@polkadot/types/interfaces/extrinsics";
 
 /***
  * This mints all specified assets to a specified wallet.
@@ -12,16 +15,24 @@ import {expect} from "chai";
  * @param assetIDs All assets to be minted to wallet.
  * @param amount Mint amount.
  */
-export async function mintAssetsToWallet(wallet, sudoKey, assetIDs:number[], amount=999999999999999) {
+
+export async function mintAssetsToWallet(wallet, sudoKey, assetIDs:number[]) {
+  const amount = api.createType('u128', BigInt(100000000000000000000));
+  const tx : [SubmittableExtrinsic]= [api.tx.sudo.sudo(
+      api.tx.assets.mintInto(1, wallet.publicKey, amount)
+  )];
   for (const asset of assetIDs) {
-    const {data: [result]} = await sendAndWaitForSuccess(
+    tx.push(api.tx.sudo.sudo(
+        api.tx.assets.mintInto(asset, wallet.publicKey, amount)
+    ));
+  }
+  /*const {data: [result]} = await sendAndWaitForWithBatch(
       api,
       sudoKey,
       api.events.sudo.Sudid.is,
-      api.tx.sudo.sudo(
-        api.tx.assets.mintInto(asset, wallet.publicKey, amount)
-      )
-    )
-    expect(result.isOk).to.be.true;
-  }
+      tx,
+      false
+    );
+    expect(result.isOk).to.be.true;*/
+  await api.tx.utility.batch(tx).signAndSend(sudoKey, {nonce: -1});
 }

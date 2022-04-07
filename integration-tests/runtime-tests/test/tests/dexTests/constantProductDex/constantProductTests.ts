@@ -45,7 +45,7 @@ describe('tx.constantProductDex Tests', function () {
   
   describe('tx.constantProductDex Success Tests', function() {
     if(!testConfiguration.enabledTests.successTests.enabled){
-      return;
+      this.skip();
     }
 
     it('Users can create a constantProduct pool', async function() {
