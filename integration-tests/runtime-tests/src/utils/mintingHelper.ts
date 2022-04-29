@@ -29,3 +29,6 @@ export async function mintAssetsToWallet(wallet, sudoKey, assetIDs:number[], amo
   const {data:[result],} = await sendAndWaitForWithBatch(api, sudoKey, api.events.sudo.Sudid.is, tx, false);
   expect(result.isOk).to.be.true;
 }
+export function Pica(value: string | number){
+  return BigInt(value)*BigInt(Math.pow(10, 12));
+}
