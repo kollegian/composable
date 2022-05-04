@@ -17,7 +17,7 @@ import {OrmlTokensAccountData} from "@composable/types/interfaces";
  * @param assetIDs All assets to be minted to wallet.
  * @param amount Mint amount.
  */
-export async function mintAssetsToWallet(wallet, sudoKey, assetIDs:number[], amount= BigInt(300000000000000000000000)) {
+export async function mintAssetsToWallet(wallet, sudoKey, assetIDs:number[], amount= Pica(9000000)) {
   const pAmount = api.createType('u128', amount);
   const tx = [];
   for (const asset of assetIDs) {

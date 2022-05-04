@@ -12,6 +12,11 @@ export default {
       quote: "CurrencyId"
     },
     ComposableTraitsXcmCumulusMethodId: "Null",
-    ComposableTraitsXcmXcmSellRequest: "Null"
+    ComposableTraitsXcmXcmSellRequest: "Null",
+    ComposableTraitsXcmAssetsXcmAssetLocation: "Null",
+    ComposableTraitsXcmAssetsForeignMetadata: "Null",
+    ComposableTraitsLendingRepayStrategy: "Null",
+    ComposableTraitsAssetsBasicAssetMetadata: "Null",
+    ComposableTraitsDexDexRoute: "Null"
   },
 };

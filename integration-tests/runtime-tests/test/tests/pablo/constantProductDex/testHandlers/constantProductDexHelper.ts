@@ -5,7 +5,6 @@ import { u128 } from '@polkadot/types-codec';
 /**
  *Contains handler methods for the constantProductDex Tests. 
  */
-let poolId: number;  
 let constantProductk: bigint;
 let baseAmountTotal: bigint;
 let quoteAmountTotal: bigint;
@@ -14,7 +13,7 @@ baseAmountTotal = BigInt(0);
 quoteAmountTotal = BigInt(0);
 mintedLPTokens = BigInt(0);
 
-export async function createPool(walletId: KeyringPair, owner: KeyringPair, baseAssetId: number, quoteAssetId: number, ownerFee: number){
+export async function createPool(walletId: KeyringPair, owner: KeyringPair, baseAssetId: number, quoteAssetId: number, fee: number, ownerFee: number){
   const pool = api.createType("PalletPabloPoolInitConfiguration", {
     ConstantProduct: {
       owner: api.createType("AccountId32", owner.address),
@@ -22,7 +21,7 @@ export async function createPool(walletId: KeyringPair, owner: KeyringPair, base
         base: api.createType('u128', baseAssetId),
         quote: api.createType('u128', quoteAssetId)
       }),
-      fee: api.createType('Permill', 0),
+      fee: api.createType('Permill', fee),
       ownerFee: api.createType('Permill', ownerFee)
     }
   });
@@ -32,8 +31,7 @@ export async function createPool(walletId: KeyringPair, owner: KeyringPair, base
     api.events.pablo.PoolCreated.is,
     api.tx.pablo.create(pool)
   );
-  poolId = resultPoolId.toNumber();
-  return poolId;
+    return resultPoolId.toNumber();
 }
 export async function addFundstoThePool(poolId:number, walletId:KeyringPair, baseAmount:bigint, quoteAmount:bigint){
   const pool = api.createType("u128", poolId)
@@ -58,7 +56,7 @@ export async function addFundstoThePool(poolId:number, walletId:KeyringPair, bas
   return {walletIdResult, baseAdded, quoteAdded, returnedLPTokens};
 }
 
-export async function buyFromPool(ppolId: number, walletId: KeyringPair, assetId:number, amountToBuy: bigint){
+export async function buyFromPool(poolId: number, walletId: KeyringPair, assetId:number, amountToBuy: bigint){
   const poolIdParam = api.createType('u128', poolId);
   const assetIdParam = api.createType('u128', assetId);
   const amountParam = api.createType('u128', amountToBuy);
@@ -66,7 +64,7 @@ export async function buyFromPool(ppolId: number, walletId: KeyringPair, assetId
   const minMintAmount = api.createType('u128', 0);
   constantProductk = baseAmountTotal*quoteAmountTotal;
   const expectedConversion = constantProductk/(baseAmountTotal-amountToBuy)-quoteAmountTotal;
-  const {data: [retPoolId, accountId, quoteArg,swapArg,amountgathered,quoteAmount,ownerFee] } = await sendAndWaitForSuccess(
+  const {data: [retPoolId, accountId, baseArg, quoteArg,returnArg,baseAmount,quoteAmount,ownerFee] } = await sendAndWaitForSuccess(
     api,
     walletId,
     api.events.pablo.Swapped.is,
@@ -102,8 +100,9 @@ export async function sellToPool(poolId: number, walletId: KeyringPair, assetId:
   return returnedAccount.toString();
 }
 
-export async function removeLiquidityFromPool(walletId: KeyringPair, lpTokens:bigint): Promise<{remainingLpTokens: u128, expectedLPTokens: bigint}>{
-  const expectedLPTokens = mintedLPTokens-lpTokens;
+export async function removeLiquidityFromPool(poolId: number, walletId: KeyringPair, lpTokens:bigint): Promise<{resultBase: u128, resultQuote: u128}>{
+  let expectedLPTokens = mintedLPTokens;
+  expectedLPTokens -= lpTokens;
   const poolIdParam = api.createType('u128', poolId);
   const lpTokenParam = api.createType('u128', lpTokens);
   const minBaseParam = api.createType('u128', 0);
@@ -119,13 +118,13 @@ export async function removeLiquidityFromPool(walletId: KeyringPair, lpTokens:bi
       minQuoteAmountParam
     )
   );   
-  return {remainingLpTokens, expectedLPTokens}
+  return {resultBase, resultQuote}
 }
 
-export async function swapTokenPairs(wallet: KeyringPair, 
+export async function swapTokenPairs(poolId:number, wallet: KeyringPair,
   baseAssetId: number,
   quoteAssetId:number,
-  quoteAmount: number,
+  quoteAmount: bigint,
   minReceiveAmount: number = 0
   ){
     const poolIdParam = api.createType('u128', poolId);
@@ -136,7 +135,7 @@ export async function swapTokenPairs(wallet: KeyringPair,
     const quoteAmountParam = api.createType('u128', quoteAmount);
     const minReceiveParam = api.createType('u128', minReceiveAmount);
     const keepAliveParam = api.createType('bool', true);
-    const {data: [resultPoolId,resultWallet,resultQuote,resultBase,resultBaseAmount,returnedQuoteAmount,]}= await sendAndWaitForSuccess(
+    const {data: [resultPoolId,resultWallet,baseAsset,quoteAsset,quoteAssetIdParam,returnedBaseAmount, returnedQuoteAmount, lpTokens]}= await sendAndWaitForSuccess(
       api,
       wallet,
       api.events.pablo.Swapped.is,
@@ -148,7 +147,7 @@ export async function swapTokenPairs(wallet: KeyringPair,
         keepAliveParam
       )
     );
-    return {returnedQuoteAmount};
+    return {returnedBaseAmount, returnedQuoteAmount};
 }
 
 export async function getUserTokens(walletId: KeyringPair, assetId: number){
@@ -157,7 +156,6 @@ export async function getUserTokens(walletId: KeyringPair, assetId: number){
 }
 
 export async function getOwnerFee(poolType: string, poolId: number){
-  console.log("let's start");
   const result = await api.query.pablo.pools(api.createType('u128', poolId));
   return result.unwrap().toJSON()[poolType]["ownerFee"];
 }
