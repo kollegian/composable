@@ -3,6 +3,7 @@ import {expect} from "chai";
 import {KeyringPair} from "@polkadot/keyring/types";
 import { addFundstoThePool, buyFromPool, createPool, getOwnerFee, getUserTokens, removeLiquidityFromPool, sellToPool, swapTokenPairs } from './testHandlers/constantProductDexHelper';
 import {mintAssetsToWallet, Pica} from '@composable/utils/mintingHelper';
+import {u128} from "@polkadot/types-codec";
 
 /**
    * This suite includes tests for the constantProductDex Pallet. 
@@ -48,7 +49,7 @@ describe('tx.constantProductDex Tests', function () {
       return;
     }
 
-    it.only('Users can create a constantProduct pool', async function() {
+    it('Users can create a constantProduct pool', async function() {
       if(!testConfiguration.enabledTests.successTests.createPool.enabled){
         this.skip();
       }
@@ -67,7 +68,7 @@ describe('tx.constantProductDex Tests', function () {
       expect(returnedOwnerFee).to.be.equal(ownerFee);              
     })     
         
-    it.only('Given that users has sufficient balance, User1 can send funds to pool', async function(){
+    it('Given that users has sufficient balance, User1 can send funds to pool', async function(){
       if(!testConfiguration.enabledTests.successTests.addLiquidityTests.enabled){
         this.skip();
       }
@@ -84,7 +85,7 @@ describe('tx.constantProductDex Tests', function () {
       expect(result.walletIdResult.toString()).to.be.equal(walletId1Account);
     });  
 
-    it.only('User2 can send funds to pool and router adjusts deposited amounts based on constantProductFormula to prevent arbitrage//Removed?', async function(){
+    it('User2 can send funds to pool and router adjusts deposited amounts based on constantProductFormula to prevent arbitrage//Removed?', async function(){
       if(!testConfiguration.enabledTests.successTests.addLiquidityTests.enabled){
         this.skip();
       }
@@ -97,7 +98,7 @@ describe('tx.constantProductDex Tests', function () {
       expect(result.walletIdResult.toString()).to.be.equal(walletId2Account);
     });
 
-    it.only("Given the pool has the sufficient funds, User1 can't completely drain the funds", async function(){
+    it("Given the pool has the sufficient funds, User1 can't completely drain the funds", async function(){
       if(!testConfiguration.enabledTests.successTests.poolDrainTest.enabled){
         this.skip();
       }
@@ -107,7 +108,7 @@ describe('tx.constantProductDex Tests', function () {
       });
     });
 
-    it.only('User1 can buy from the pool and router respects the constantProductFormula', async function() {
+    it('User1 can buy from the pool and router respects the constantProductFormula', async function() {
       if(!testConfiguration.enabledTests.successTests.buyTest.enabled){
         this.skip();
       }
@@ -150,7 +151,7 @@ describe('tx.constantProductDex Tests', function () {
       const result = await buyFromPool(poolId, walletId2, baseAssetId, Pica(500));
       const ownerAfterTokens = await getUserTokens(walletId1, quoteAssetId);
       //verifies the ownerFee to be added in the owner account.
-      expect(ownerAfterTokens).to.be.equal(ownerInitialTokens+(result.ownerFee.toNumber()))
+      expect(BigInt(ownerAfterTokens.toString(10))).to.be.equal(BigInt(ownerInitialTokens.toString(10))+BigInt(result.ownerFee.toString(10)));
     });
 
     it('User1 can remove liquidity from the pool by using LP Tokens', async function(){
