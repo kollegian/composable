@@ -93,8 +93,6 @@ describe("StableSwapDex Test Suite", function () {
       );
       poolId1 = result.resultPoolId;
       expect(result.resultPoolId).to.be.a("number");
-      const { ownFee } = await getPoolInfo(api, "StableSwap", poolId1);
-      expect(ownFee).to.be.equal(ownerFee);
     });
 
     it("Given that users have sufficient funds, User2 can create StableswapPool", async function () {
@@ -110,8 +108,6 @@ describe("StableSwapDex Test Suite", function () {
       );
       poolId2 = result.resultPoolId;
       expect(result.resultPoolId).to.be.a("number");
-      const { ownFee } = await getPoolInfo(api, "StableSwap", poolId2);
-      expect(ownFee).to.be.equal(ownerFee);
     });
 
     it("Given that users have no funds in their wallets, they can create a StableSwap Pool", async function () {

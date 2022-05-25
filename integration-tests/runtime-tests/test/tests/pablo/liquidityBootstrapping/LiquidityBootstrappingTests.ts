@@ -30,10 +30,10 @@ describe("LiquidityBootsrapping Pool Test Suite", function () {
   }
   this.timeout(3 * 60 * 1000);
   let api: ApiPromise;
-  let poolId1: number, poolId2: number, fee: number;
+  let poolId1: number, poolId2: number, feeRate: number, ownerFeeRate: number, protocolFeeRate: number;
   let walletId1: KeyringPair, walletId2: KeyringPair, sudoKey: KeyringPair;
   let baseAssetId: number, quoteAssetId: number, quoteAssetId2: number;
-  let baseAmount: bigint, quoteAmount: bigint, lpTokens: bigint;
+  let baseAmount: bigint, quoteAmount: bigint;
   let startTime: number, endTime: number, initialWeight: number, finalWeight: number;
 
   before("Given that users have sufficient balance", async function () {
@@ -57,7 +57,9 @@ describe("LiquidityBootsrapping Pool Test Suite", function () {
     //Min final weight is 5%, here it is as passed as 6%
     finalWeight = 60000;
     //Sets 1% fee
-    fee = 10000;
+    feeRate = 10000;
+    ownerFeeRate = 200000;
+    protocolFeeRate = 600000;
     baseAmount = Pica(3000);
     quoteAmount = Pica(10000);
     await mintAssetsToWallet(api, walletId1, sudoKey, [1, baseAssetId, quoteAssetId]);
@@ -86,7 +88,9 @@ describe("LiquidityBootsrapping Pool Test Suite", function () {
         endTime,
         initialWeight,
         finalWeight,
-        fee
+        feeRate,
+        ownerFeeRate,
+        protocolFeeRate
       );
       poolId1 = result.resultPoolId;
       expect(poolId1).to.be.a("number");
@@ -103,7 +107,9 @@ describe("LiquidityBootsrapping Pool Test Suite", function () {
         endTime,
         initialWeight,
         finalWeight,
-        fee
+        feeRate,
+        ownerFeeRate,
+        protocolFeeRate
       );
       expect(result.resultPoolId).to.be.a("number");
     });
@@ -165,7 +171,9 @@ describe("LiquidityBootsrapping Pool Test Suite", function () {
             endTime,
             weight,
             50001,
-            fee
+            feeRate,
+            ownerFeeRate,
+            protocolFeeRate
           ).catch(e => expect(e.message).to.contain("Other"));
         }
         for (const duration of durations) {
@@ -179,7 +187,9 @@ describe("LiquidityBootsrapping Pool Test Suite", function () {
             startTime + duration,
             initialWeight,
             finalWeight,
-            fee
+            feeRate,
+            ownerFeeRate,
+            protocolFeeRate
           ).catch(e => expect(e.message).to.contain("Other"));
         }
       }

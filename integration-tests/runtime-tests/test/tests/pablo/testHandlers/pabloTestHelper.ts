@@ -35,7 +35,7 @@ export async function createConsProdPool(
   baseAssetId: number,
   quoteAssetId: number,
   fee: number,
-  ownerFee: number
+  baseWeight: number
 ): Promise<number> {
   const pool = api.createType("PalletPabloPoolInitConfiguration", {
     ConstantProduct: {
@@ -45,7 +45,7 @@ export async function createConsProdPool(
         quote: api.createType("u128", quoteAssetId)
       }),
       fee: api.createType("Permill", fee),
-      ownerFee: api.createType("Permill", ownerFee)
+      baseWeight: api.createType("Permill", baseWeight)
     }
   });
   const {
@@ -185,10 +185,9 @@ export async function swapTokenPairs(
       resultWallet,
       baseAsset,
       quoteAsset,
-      quoteAssetIdParam,
       returnedBaseAmount,
       returnedQuoteAmount,
-      lpTokens
+      feeInfo
     ]
   } = await sendAndWaitForSuccess(
     api,
@@ -196,7 +195,7 @@ export async function swapTokenPairs(
     api.events.pablo.Swapped.is,
     api.tx.pablo.swap(poolIdParam, currencyPair, quoteAmountParam, minReceiveParam, keepAliveParam)
   );
-  return { returnedBaseAmount, returnedQuoteAmount: returnedQuoteAmount.fee };
+  return { returnedBaseAmount, returnedQuoteAmount };
 }
 
 export async function createMultipleCPPools(api: ApiPromise, wallet: KeyringPair) {
@@ -211,7 +210,7 @@ export async function createMultipleCPPools(api: ApiPromise, wallet: KeyringPair
           quote: api.createType("u128", Math.floor(Math.random() * 10000))
         }),
         fee: api.createType("Permill", Math.floor(Math.random() * 100000)),
-        ownerFee: api.createType("Permill", Math.floor(Math.random() * 100000))
+        baseWeight: api.createType("Permill", Math.floor(Math.random() * 100000))
       }
     });
     tx.push(api.tx.pablo.create(pool));
@@ -228,13 +227,12 @@ export async function getPoolInfo(
   api: ApiPromise,
   poolType: string,
   poolId: number
-): Promise<{ ownFee: number; lpTokenId: number }> {
+): Promise<{ lpTokenId: number }> {
   const result = await api.query.pablo.pools(api.createType("u128", poolId));
   const pool = result.unwrap();
   const poolS = "as" + poolType;
-  const ownFee = pool[poolS].ownerFee.toNumber();
   const lpTokenId = pool[poolS].lpToken.toNumber();
-  return { ownFee, lpTokenId };
+  return { lpTokenId };
 }
 
 export async function rpcPriceFor(
@@ -326,7 +324,9 @@ export async function createLBPool(
   end: number,
   initialWeight: number,
   finalWeight: number,
-  fee: number
+  feeRate: number,
+  ownerFeeRate: number,
+  protocolFeeRate: number
 ): Promise<{ resultPoolId: number }> {
   const pool = api.createType("PalletPabloPoolInitConfiguration", {
     LiquidityBootstrapping: {
@@ -341,7 +341,11 @@ export async function createLBPool(
         initialWeight: api.createType("Permill", initialWeight),
         finalWeight: api.createType("Permill", finalWeight)
       }),
-      fee: api.createType("Permill", fee)
+      feeConfig: api.createType("ComposableTraitsDexFeeConfig", {
+        feeRate: api.createType("Permill", feeRate),
+        ownerFeeRate: api.createType("Permill", ownerFeeRate),
+        protocolFeeRate: api.createType("Permill", protocolFeeRate)
+      })
     }
   });
   const {

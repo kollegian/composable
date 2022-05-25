@@ -12,6 +12,9 @@ export default {
       quote: "CurrencyId"
     },
     ComposableTraitsXcmCumulusMethodId: "Null",
-    ComposableTraitsXcmXcmSellRequest: "Null"
+    ComposableTraitsXcmXcmSellRequest: "Null",
+    PolkadotPrimitivesV2AbridgedHostConfiguration: "Null",
+    PolkadotPrimitivesV2UpgradeRestriction: "Null",
+    PolkadotPrimitivesV2PersistedValidationData: "Null"
   }
 };
