@@ -4,7 +4,7 @@ import { sendAndWaitForSuccess } from "@composable/utils/polkadotjs";
 import { Pica } from "@composable/utils/mintingHelper";
 import BN from "bn.js";
 import { Option } from "@polkadot/types-codec";
-import { PalletAssetsAssetAccount } from "@composable/types/interfaces";
+import {PalletAssetsAssetAccount, XcmV2WeightLimit} from "@composable/types/interfaces";
 
 export async function initializeApis(newClient: ApiPromise) {
   const picassoApi = newClient;
@@ -237,6 +237,7 @@ export async function changeGasToken(api: ApiPromise, wallet: KeyringPair, asset
   );
 }
 
+
 export async function sendPicaToAnotherAccount(
   api: ApiPromise,
   senderWallet: KeyringPair,
@@ -287,7 +288,7 @@ export async function sendAssetToRelaychain(
   senderWallet: KeyringPair,
   receiverWallet: KeyringPair,
   amount: number,
-  destinationWeight: number
+  destinationWeight: XcmV2WeightLimit
 ) {
   const currencyId = api.createType("u128", 4);
   const amountP = api.createType("u128", Pica(amount));
@@ -296,6 +297,7 @@ export async function sendAssetToRelaychain(
     api,
     senderWallet,
     api.events.xTokens.TransferredMultiAssets.is,
+    // @ts-ignore
     api.tx.xTokens.transfer(currencyId, amountP, dest, destinationWeight)
   );
 }
@@ -439,7 +441,7 @@ function setTypesForTransfersToStatemine(
         })
       }),
       fun: api.createType("XcmV1MultiassetFungibility", {
-        Fungible: api.createType("Compact<u128>", 1_000_000_000)
+        Fungible: api.createType("Compact<u128>", 100_000_000_000)
       })
     })
   });
@@ -461,7 +463,7 @@ function setTypesForTransfersToStatemine(
       })
     })
   });
-  const weightLimit = api.createType("u64", 9_000_000_000);
+  const weightLimit = api.createType("XcmV2WeightLimit", "Unlimited");
   return { asset, fee, dest, weightLimit };
 }
 
@@ -483,6 +485,7 @@ export async function sendTokenToStatemine(
     api,
     senderWallet,
     api.events.xTokens.TransferredMultiAssets.is,
+    //@ts-ignore
     api.tx.xTokens.transferMultiassetWithFee(asset, fee, dest, weightLimit)
   );
 }

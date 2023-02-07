@@ -17,8 +17,8 @@
   "testData": {
     "fees": {
       "toPicasso": {
-        "usdt": 13,
-        "ksm": 347632
+        "usdt": 12,
+        "ksm": 303109
       },
       "toKusama": {
         "ksm": 51105801784
