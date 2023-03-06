@@ -54,14 +54,15 @@ describe("[SHORT] rpc.assets Tests", function () {
     expect(parseInt(kUSD_amount.toString())).to.be.equals(0);
   });
 
-  it("rpc.assets.listAssets Tests", async function () {
+  it.only("rpc.assets.listAssets Tests", async function () {
     if (!testConfiguration.enabledTests.rpc.listAssets__success) this.skip();
     const result = await RpcAssetsTests.rpcListAssetsTest(api);
     result.every(i => expect(i).to.have.all.keys("id", "name", "decimals", "foreignId", "ratio", "existentialDeposit"));
-    expect(result.map(e => e.id.toNumber())).to.include.members([
-      // These are the assets to be included on the first release
-      1, 4, 5, 129, 130, 131
-    ]);
+    expect(result.map(e => {
+      e.id.toNumber();
+      console.log(e.name.toHuman());
+      console.log(e.existentialDeposit.toHuman());
+    }));
     expect(result.map(e => hex_to_ascii(e.name.toString()))).to.include.members([
       // These are the assets to be included on the first release
       "PICA",

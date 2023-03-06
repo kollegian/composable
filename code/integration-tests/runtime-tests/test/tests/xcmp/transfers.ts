@@ -43,7 +43,7 @@ import {XcmV2WeightLimit} from "@composable/types/interfaces";
  * 4. Tests for gas fee paid in assets other than native asset
  * 5. Tests for negative scenarios
  */
-describe.only("[SHORT][LAUNCH] tx.xcmp Tests", function () {
+describe("[SHORT][LAUNCH] tx.xcmp Tests", function () {
   if (!testConfiguration.enabledTests.enabled) return;
   let picassoApi: ApiPromise;
   let kusamaApi: ApiPromise;

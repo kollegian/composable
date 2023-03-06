@@ -254,7 +254,7 @@ export async function sendPicaToAnotherAccount(
     api,
     senderWallet,
     api.events.balances.Transfer.is,
-    api.tx.assets.transfer(asset, dest, amountP, keepAlive)
+    api.tx.assetsTransactorRouter.transfer(asset, dest, amountP, keepAlive)
   );
 }
 
